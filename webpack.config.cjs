@@ -1,28 +1,29 @@
-const { resolve } = require('path');
-var glob = require('glob');
-var path = require('path');
+const path = require('node:path')
+const { resolve } = require('node:path')
+const process = require('node:process')
+const glob = require('glob')
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ESBuildMinifyPlugin } = require('esbuild-loader');
-const { ProvidePlugin, BannerPlugin } = require('webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
+const { ProvidePlugin, BannerPlugin } = require('webpack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-const CopyPlugin = require('copy-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin')
 
-const isProd = process.env.NODE_ENV === 'production';
-const isDevelopment = !isProd;
+const isProd = process.env.NODE_ENV === 'production'
+const isDevelopment = !isProd
 
-const fastRefresh = isDevelopment ? new ReactRefreshWebpackPlugin() : null;
+const fastRefresh = isDevelopment ? new ReactRefreshWebpackPlugin() : null
 
-const SANDBOX_SUFFIX = '-sandbox';
+const SANDBOX_SUFFIX = '-sandbox'
 
 const config = {
   mode: isProd ? 'production' : 'development',
-  entry: glob.sync('./src/widgets/**.tsx').reduce(function (obj, el) {
-    obj[path.parse(el).name] = el;
-    obj[path.parse(el).name + SANDBOX_SUFFIX] = el;
-    return obj;
+  entry: glob.sync('./src/widgets/**.tsx').reduce((obj, el) => {
+    obj[path.parse(el).name] = el
+    obj[path.parse(el).name + SANDBOX_SUFFIX] = el
+    return obj
   }, {}),
 
   output: {
@@ -31,6 +32,8 @@ const config = {
     publicPath: '',
   },
   resolve: {
+    // Fix not finding files in src 
+    modules: [path.resolve(__dirname), 'node_modules'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   module: {
@@ -47,7 +50,7 @@ const config = {
       {
         test: /\.css$/i,
         use: [
-          isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
+          isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
           { loader: 'css-loader', options: { url: false } },
           'postcss-loader',
         ],
@@ -55,9 +58,11 @@ const config = {
     ],
   },
   plugins: [
-    isDevelopment ? undefined : new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
+    isDevelopment
+      ? undefined
+      : new MiniCssExtractPlugin({
+        filename: '[name].css',
+      }),
     new HtmlWebpackPlugin({
       templateContent: `
       <body></body>
@@ -82,26 +87,27 @@ const config = {
     }),
     new BannerPlugin({
       banner: (file) => {
-        return !file.chunk.name.includes(SANDBOX_SUFFIX) ? 'const IMPORT_META=import.meta;' : '';
+        return !file.chunk.name.includes(SANDBOX_SUFFIX) ? 'const IMPORT_META=import.meta;' : ''
       },
       raw: true,
     }),
     new CopyPlugin({
       patterns: [
-        {from: 'public', to: ''},
-        {from: 'README.md', to: ''}
-      ]
+        { from: 'public', to: '' },
+        { from: 'README.md', to: '' },
+      ],
     }),
     fastRefresh,
   ].filter(Boolean),
-};
+}
 
 if (isProd) {
   config.optimization = {
     minimize: isProd,
     minimizer: [new ESBuildMinifyPlugin()],
-  };
-} else {
+  }
+}
+else {
   // for more information, see https://webpack.js.org/configuration/dev-server
   config.devServer = {
     port: 8080,
@@ -111,9 +117,9 @@ if (isProd) {
     watchFiles: ['src/*'],
     headers: {
       'Access-Control-Allow-Origin': '*',
-      "Access-Control-Allow-Headers": "baggage, sentry-trace"
+      'Access-Control-Allow-Headers': 'baggage, sentry-trace',
     },
-  };
+  }
 }
 
-module.exports = config;
+module.exports = config
