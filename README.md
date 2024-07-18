@@ -1,10 +1,8 @@
 ## What's the purpose of this repository?
 
-  This repository provides a modified version of the [Remnote Plugin Template React](https://github.com/remnoteio/remnote-plugin-template-react), addressing several issues that hindered initial project setup.
+  This repository provides a modified version of the [Remnote Plugin Template React](https://github.com/remnoteio/remnote-plugin-template-react), addressing several issues in the project development.
   
-  The original template presented challenges during execution. This repository resolves webpack issues.
-  
-  I also use pnpm to handle the project's packages.
+  The original template presented issues during execution, regardless webpack version and configuration, therefore I decided to create this template with the adressed issues.
 
 ## How to run the project
 
