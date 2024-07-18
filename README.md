@@ -9,9 +9,9 @@
 ## How to run the project
 
 - First at all, you need:
-  1. node version at least version 20
-  2. pnpm and glob packages
+  - node version at least version 20
+  - pnpm and glob packages
 
 - Once you have covered the requirements:
-  - 1. `pnpm i` to install the packages
-  - 2. `pnpm run dev` to run the project in development mode
+  - `pnpm i` to install the packages
+  - `pnpm run dev` to run the project in development mode
